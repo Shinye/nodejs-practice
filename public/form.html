@@ -8,6 +8,31 @@
       email : <input type="text" name="email"><br/>
       <input type="submit">
     </form>
-  
+
+      <button class="ajaxsend">Ajax Send </button>
+
+      <div class="result"></div>
+
+      <script>
+        document.querySelector('.ajaxsend').addEventListener('click', function(){
+          var inputdata = document.forms[0].elements[0].value;
+          sendAjax('http://127.0.0.1:3000/ajax_send_email', inputdata);
+        })
+
+        function sendAjax(url,data){
+          var data = {'email' : data} // 클라이언트에 있는 form을 JSON형태로 만듦
+          data = JSON.stringify(data);
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST',url); // app.js(서버) 에서 post로 받았기 때문에 포스트로 보냄.
+          xhr.setRequestHeader('Content-Type', "application/json"); //서버로 보낼 때 제이슨 형태의 데이터를 보냄 -> 데이터 타입 써준거
+          xhr.send(data); // send에 담아 보냄
+          xhr.addEventListener('load', function(){
+            //console.log(xhr.responseText);
+            var result = JSON.parse(xhr.responseText);
+            if(result.result !== 'ok') return;
+            document.querySelector(".result").innerHTML = result.email;
+          });
+        }
+      </script>
   </body>
 </html>
