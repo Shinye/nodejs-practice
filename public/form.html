@@ -21,18 +21,22 @@
 
         function sendAjax(url,data){
           var data = {'email' : data} // 클라이언트에 있는 form을 JSON형태로 만듦
-          data = JSON.stringify(data);
+          data = JSON.stringify(data); // JSON값을 문자열로 바꿔줌.
           var xhr = new XMLHttpRequest();
-          xhr.open('POST',url); // app.js(서버) 에서 post로 받았기 때문에 포스트로 보냄.
-          xhr.setRequestHeader('Content-Type', "application/json"); //서버로 보낼 때 제이슨 형태의 데이터를 보냄 -> 데이터 타입 써준거
-          xhr.send(data); // send에 담아 보냄
-          xhr.addEventListener('load', function(){
-            //console.log(xhr.responseText);
-            var result = JSON.parse(xhr.responseText);
+
+          //HTTP요청 구성 순서 : 요청방식,URL지정 -> 요청헤더 -> 요청본문 순서
+          xhr.open('POST',url); // app.js(서버) 에서 post로 받았기 때문에 포스트로 보냄. // HTTP POST 요청으로, 이 url의 내용을 가져오도록 만든다.
+          xhr.setRequestHeader('Content-Type', "application/json"); //요청 헤더 설정 //서버로 보낼 때 제이슨 형태의 데이터를 보냄 -> 데이터 타입 써준거
+          xhr.send(data); //부가적인 요청 '본문(body)'을 지정하고 서버로 전송하는 것 // send에 담아 보냄 // GET요청은 본문을 가질 수 없으므로 send()메서드의 인자를 null로.
+                          //해당 본문은 setRequestHeader()에서 지정한 Content-Type 형식이어야 한다.
+
+          xhr.addEventListener('load', function(){ // 응답이 제대로 왔을 때...로드 되었을 때.
+            var result = JSON.parse(xhr.responseText); // responsetext : HTTP응답을 모두 전송받았으면, 이 프로퍼티는 완전한 응답을 받는다.
             if(result.result !== 'ok') return;
             document.querySelector(".result").innerHTML = result.email;
           });
         }
+
       </script>
   </body>
 </html>
